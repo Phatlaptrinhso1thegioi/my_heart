@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Trà My Của Anh — Special Halloween Edition 🎃</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top left, #2d1b36, #1a0f24, #0f0814);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #fce7f3;
+        }
+        .font-romantic {
+            font-family: 'Dancing Script', cursive;
+        }
+        .font-serif-title {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Glassmorphism Halloween Theme (Dark & Mystic) */
+        .glass-card {
+            background: rgba(30, 20, 40, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 159, 28, 0.25);
+            box-shadow: 0 20px 50px rgba(247, 127, 0, 0.15);
+        }
+
+        /* Hiệu ứng rung khi nhập sai PIN */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Dơi / Bí ngô bay nền */
+        .floating-bat {
+            position: fixed;
+            color: rgba(247, 127, 0, 0.3);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) scale(0.8) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.7; }
+            80% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        /* ==========================================
+           ĐĨA THAN XOAY & SÓNG NHẠC (MUSIC PLAYER)
+        ========================================== */
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .vinyl-spin {
+            animation: spinSlow 6s linear infinite;
+        }
+        .vinyl-paused {
+            animation-play-state: paused;
+        }
+        .music-bar {
+            width: 3px;
+            background-color: #f77f00;
+            border-radius: 99px;
+            animation: soundWave 0.75s ease-in-out infinite alternate;
+        }
+        .music-bar:nth-child(1) { height: 8px; animation-delay: 0.1s; }
+        .music-bar:nth-child(2) { height: 15px; animation-delay: 0.3s; }
+        .music-bar:nth-child(3) { height: 10px; animation-delay: 0.2s; }
+        .music-bar:nth-child(4) { height: 14px; animation-delay: 0.4s; }
+        @keyframes soundWave {
+            0% { transform: scaleY(0.35); }
+            100% { transform: scaleY(1); }
+        }
+        .bars-paused .music-bar {
+            animation-play-state: paused;
+            transform: scaleY(0.3);
+        }
+
+        /* ==========================================
+           PHONG BÌ THƯ 3D (CSS 3D PERSPECTIVE)
+        ========================================== */
+        .scene-3d {
+            perspective: 1200px;
+        }
+        .envelope-3d-wrapper {
+            width: 340px;
+            height: 230px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.2s ease-out;
+            cursor: pointer;
+        }
+        @media (min-width: 640px) {
+            .envelope-3d-wrapper {
+                width: 420px;
+                height: 280px;
+            }
+        }
+        .env-back {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #7b2cbf, #5a189a);
+            border-radius: 16px;
+            box-shadow: 0 25px 60px rgba(123, 44, 191, 0.35);
+            transform: translateZ(0px);
+        }
+        .env-letter-preview {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            top: 14px;
+            bottom: 14px;
+            background: #1f1429;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transform: translateZ(2px);
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed #f77f00;
+        }
+        .envelope-3d-wrapper.open .env-letter-preview {
+            transform: translateY(-110px) translateZ(25px) scale(1.03);
+        }
+        .env-front {
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            pointer-events: none;
+            transform: translateZ(10px);
+        }
+        .env-pocket-left {
+            position: absolute;
+            inset: 0;
+            background: #5a189a;
+            clip-path: polygon(0 0, 52% 55%, 0 100%);
+        }
+        .env-pocket-right {
+            position: absolute;
+            inset: 0;
+            background: #7b2cbf;
+            clip-path: polygon(100% 0, 48% 55%, 100% 100%);
+        }
+        .env-pocket-bottom {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, #3c096c, #5a189a);
+            clip-path: polygon(0 100%, 50% 48%, 100% 100%);
+        }
+        .env-flap {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, #9d4edd, #7b2cbf);
+            clip-path: polygon(0 0, 100% 0, 50% 58%);
+            transform-origin: top;
+            transform: rotateX(0deg) translateZ(12px);
+            transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            z-index: 20;
+        }
+        .envelope-3d-wrapper.open .env-flap {
+            transform: rotateX(180deg) translateZ(1px);
+            z-index: 1;
+        }
+        .wax-seal {
+            position: absolute;
+            top: 52%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(18px);
+            width: 58px;
+            height: 58px;
+            border-radius: 9999px;
+            background: radial-gradient(circle at 30% 30%, #f77f00, #d62828);
+            border: 3px solid #ffb703;
+            box-shadow: 0 6px 16px rgba(247, 127, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 22px;
+            transition: all 0.4s ease;
+            z-index: 30;
+            animation: pulseSeal 2s infinite;
+        }
+        @keyframes pulseSeal {
+            0%, 100% { transform: translate(-50%, -50%) translateZ(18px) scale(1); }
+            50% { transform: translate(-50%, -50%) translateZ(18px) scale(1.09); }
+        }
+        .envelope-3d-wrapper.open .wax-seal {
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0.5);
+        }
+
+        .full-letter-card {
+            background: linear-gradient(to bottom right, #241432, #1b0d26);
+            background-image: radial-gradient(#7b2cbf 1px, transparent 1px);
+            background-size: 24px 24px;
+            box-shadow: 0 25px 70px rgba(123, 44, 191, 0.3);
+            border: 2px solid #f77f00;
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Camera Flash */
+        .camera-flash {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease-out;
+        }
+        .camera-flash.active {
+            opacity: 1;
+        }
+
+        /* Filters */
+        .filter-sweet { filter: contrast(1.04) brightness(1.06) saturate(1.18) sepia(0.08) hue-rotate(-5deg); }
+        .filter-vintage { filter: sepia(0.35) contrast(1.08) brightness(0.98) saturate(0.85); }
+        .filter-bw { filter: grayscale(1) contrast(1.18) brightness(1.03); }
+        .filter-peach { filter: contrast(1.05) brightness(1.08) saturate(1.25) sepia(0.15); }
+        .filter-halloween { filter: contrast(1.15) brightness(0.95) saturate(1.3) hue-rotate(15deg) sepia(0.2); }
+
+        .pin-btn {
+            transition: all 0.15s ease;
+        }
+        .pin-btn:active {
+            transform: scale(0.92);
+            background-color: rgba(247, 127, 0, 0.25);
+        }
+    </style>
+</head>
+<body class="relative flex items-center justify-center p-4 md:p-8">
+
+    <!-- Container hiệu ứng bay -->
+    <div id="hearts-container"></div>
+
+    <!-- Audio dự phòng -->
+    <audio id="custom-bg-audio" loop preload="auto"></audio>
+
+    <!-- ================= WIDGET TRÌNH PHÁT NHẠC ĐĨA THAN NỔI ================= -->
+    <div id="music-player-widget" class="fixed bottom-4 left-4 z-50 hidden opacity-0 translate-y-4 transition-all duration-500">
+        <div onclick="toggleBackgroundMusic()" class="glass-card rounded-full p-2 pr-4 flex items-center gap-3 shadow-lg border border-orange-500/40 cursor-pointer hover:scale-105 transition">
+            <!-- Đĩa than xoay -->
+            <div class="relative w-11 h-11 rounded-full bg-gradient-to-tr from-purple-950 via-gray-900 to-purple-950 flex items-center justify-center shadow-md border-2 border-orange-400">
+                <div id="vinyl-disc" class="vinyl-spin w-full h-full rounded-full flex items-center justify-center">
+                    <div class="w-4 h-4 rounded-full bg-orange-500 border-2 border-white flex items-center justify-center text-[8px] text-white">🎃</div>
+                </div>
+            </div>
+
+            <!-- Thông tin bài nhạc -->
+            <div class="text-left">
+                <div class="flex items-center gap-2">
+                    <p class="text-xs font-bold text-orange-200 leading-tight">Spooky Melody ♥</p>
+                    <div id="sound-bars" class="flex items-end gap-0.5 h-3.5">
+                        <div class="music-bar"></div>
+                        <div class="music-bar"></div>
+                        <div class="music-bar"></div>
+                        <div class="music-bar"></div>
+                    </div>
+                </div>
+                <p id="music-status-text" class="text-[10px] text-orange-400 font-medium">Đang phát nhạc • Chạm để dừng</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MÀN HÌNH 1: CỔNG MÃ PIN (THE VAULT) ================= -->
+    <div id="pin-screen" class="relative z-10 w-full max-w-md glass-card rounded-3xl p-8 text-center transition-all duration-500">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-purple-900/60 border border-orange-500/40 flex items-center justify-center text-3xl shadow-inner">
+            🎃
+        </div>
+        <p class="text-xs uppercase tracking-widest text-orange-400 font-semibold mb-1">Halloween Secret Box For Trà My</p>
+        <h1 class="font-serif-title text-2xl md:text-3xl font-bold text-orange-100 mb-2">Xin chào cục cưng của anh ♥</h1>
+        <p class="text-sm text-purple-200 mb-6">Mùa Halloween này anh có một bức thư bí mật và photobooth ma quái chờ em mở khóa!</p>
+
+        <!-- 4 Ô hiển thị PIN -->
+        <div id="pin-dots" class="flex justify-center gap-4 mb-3">
+            <div class="pin-dot w-12 h-14 rounded-2xl bg-purple-950/80 border-2 border-purple-800 flex items-center justify-center text-2xl text-orange-400 font-bold shadow-sm transition-all"></div>
+            <div class="pin-dot w-12 h-14 rounded-2xl bg-purple-950/80 border-2 border-purple-800 flex items-center justify-center text-2xl text-orange-400 font-bold shadow-sm transition-all"></div>
+            <div class="pin-dot w-12 h-14 rounded-2xl bg-purple-950/80 border-2 border-purple-800 flex items-center justify-center text-2xl text-orange-400 font-bold shadow-sm transition-all"></div>
+            <div class="pin-dot w-12 h-14 rounded-2xl bg-purple-950/80 border-2 border-purple-800 flex items-center justify-center text-2xl text-orange-400 font-bold shadow-sm transition-all"></div>
+        </div>
+
+        <p id="pin-message" class="text-xs font-medium text-orange-300 min-h-[20px] mb-4 transition-all"></p>
+
+        <!-- Bàn phím số -->
+        <div class="grid grid-cols-3 gap-3 max-w-[260px] mx-auto mb-6">
+            <button onclick="pressPin('1')" class="pin-btn h-14 rounded-2xl bg-purple-950/60 hover:bg-purple-900 text-lg font-semibold text-orange-100 shadow-sm border border-purple-800">1</button>
+            <button onclick="pressPin('2')" class="pin-btn h-14 rounded-2xl bg-purple-950/60 hover:bg-purple-900 text-lg font-semibold text-orange-100 shadow-sm border border-purple-800">2</button>
+            <button onclick="pressPin('3')" class="pin-btn h-14 rounded-2xl bg-purple-950/60 hover:bg-purple-900 text-lg font-semibold text-orange-100 shadow-sm border border-purple-800">3</button>
+            <button onclick="pressPin('4')" class="pin-btn h-14 rounded-2xl bg-purple-950/60 hover:bg-purple-900 text-lg font-semibold text-orange-100 shadow-sm border border-purple-800">4</button>
+            <button onclick="pressPin('5')" class="pin-btn h-14 rounded-2xl bg-purple-950/60 hover:bg-purple-900 text-lg font-semibold text-orange-100 shadow-sm border border-purple-800">5</button>
+            <button onclick="pressPin('6')" class="pin-btn h-14 rounded-2xl bg-purple-950/60 hover:bg-purple-900 text-lg font-semibold text-orange-100 shadow-sm border border-purple-800">6</button>
+            <button onclick="pressPin('7')" class="pin-btn h-14 rounded-2xl bg-purple-950/60 hover:bg-purple-900 text-lg font-semibold text-orange-100 shadow-sm border border-purple-800">7</button>
+            <button onclick="pressPin('8')" class="pin-btn h-14 rounded-2xl bg-purple-950/60 hover:bg-purple-900 text-lg font-semibold text-orange-100 shadow-sm border border-purple-800">8</button>
+            <button onclick="pressPin('9')" class="pin-btn h-14 rounded-2xl bg-purple-950/60 hover:bg-purple-900 text-lg font-semibold text-orange-100 shadow-sm border border-purple-800">9</button>
+            <button onclick="showHint()" class="pin-btn h-14 rounded-2xl bg-purple-900/40 hover:bg-purple-900 text-xs font-semibold text-orange-300 shadow-sm border border-purple-800">Gợi ý 💡</button>
+            <button onclick="pressPin('0')" class="pin-btn h-14 rounded-2xl bg-purple-950/60 hover:bg-purple-900 text-lg font-semibold text-orange-100 shadow-sm border border-purple-800">0</button>
+            <button onclick="deletePin()" class="pin-btn h-14 rounded-2xl bg-purple-900/40 hover:bg-purple-900 text-sm font-semibold text-orange-300 shadow-sm border border-purple-800">⌫</button>
+        </div>
+
+        <p class="text-[11px] text-purple-400">Made with all my heart by Thiên Phát ✨</p>
+    </div>
+
+    <!-- ================= MÀN HÌNH 2: THƯ 3D HALLOWEEN ================= -->
+    <div id="letter-screen" class="relative z-10 w-full max-w-2xl hidden opacity-0 transition-all duration-700 flex flex-col items-center justify-center py-6">
+        
+        <div id="envelope-stage" class="flex flex-col items-center text-center">
+            <span class="px-4 py-1.5 rounded-full bg-purple-900/60 border border-orange-500/40 text-orange-300 text-xs font-semibold mb-4 shadow-sm">
+                🦇 Chạm vào dấu sáp bí ngô để mở thư Halloween & phát nhạc
+            </span>
+
+            <div class="scene-3d my-6">
+                <div id="envelope-3d" onclick="open3DLetter()" class="envelope-3d-wrapper">
+                    <div class="env-back"></div>
+                    <div class="env-letter-preview">
+                        <p class="font-romantic text-2xl text-orange-400 font-bold">Gửi Trà My của anh ♥</p>
+                        <p class="text-xs text-purple-300 mt-1">Happy Halloween...</p>
+                    </div>
+                    <div class="env-front">
+                        <div class="env-pocket-left"></div>
+                        <div class="env-pocket-right"></div>
+                        <div class="env-pocket-bottom"></div>
+                    </div>
+                    <div class="env-flap"></div>
+                    <div class="wax-seal" title="Bấm để mở phong bì">🎃</div>
+                </div>
+            </div>
+
+            <p class="text-sm text-orange-200 font-medium mt-2 animate-pulse">
+                👆 Bé bấm vào con dấu bí ngô trên phong bì nhé!
+            </p>
+        </div>
+
+        <div id="letter-paper-stage" class="w-full hidden opacity-0 scale-90 transition-all duration-700">
+            <div id="tilt-letter-card" class="full-letter-card rounded-3xl p-6 sm:p-10 relative overflow-hidden">
+                <div class="absolute top-5 right-5 w-14 h-16 bg-purple-950 border-2 border-dashed border-orange-500 rounded-lg flex flex-col items-center justify-center text-center p-1 rotate-6 shadow-sm">
+                    <span class="text-xl">🦇</span>
+                    <span class="text-[9px] font-bold text-orange-400 uppercase tracking-tighter">SPOOKY</span>
+                </div>
+
+                <p class="text-xs font-semibold uppercase tracking-widest text-orange-400 mb-2">Bức Thư Nhỏ Mùa Halloween</p>
+                <h2 class="font-romantic text-3xl sm:text-4xl font-bold text-orange-400 mb-5">
+                    Gửi Trà My — Phù thủy nhỏ của anh ♥
+                </h2>
+
+                <div class="space-y-3.5 text-sm sm:text-base text-purple-100 leading-relaxed font-medium">
+                    <p>
+                        Halloween này dù có ma quỷ thế nào thì em vẫn là người đáng yêu nhất trong lòng anh rồi 🎃. Anh biết có những lúc anh vô tâm hay làm em buồn và suy nghĩ nhiều. Anh thực sự xin lỗi em nhiều lắm 🥺. 
+                    </p>
+                    <p>
+                        Đừng giận anh nữaaa ! Bấm nút tha lỗi bên dưới rồi vào Photo Booth Halloween chụp 4 kiểu ảnh thật xinh kèm sticker ma quái để làm hòa nhé! Yêu em nhất trên đời ♥
+                    </p>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-purple-800/70 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-purple-400">Người luôn thương em,</p>
+                        <p class="font-romantic text-2xl font-bold text-orange-400">Nguyễn Thiên Phát ♥</p>
+                    </div>
+                    <span class="text-3xl">👻🕸️</span>
+                </div>
+
+                <div class="mt-8 pt-4 flex flex-wrap items-center justify-center gap-4 relative min-h-[64px]">
+                    <button id="forgive-btn" onclick="acceptApology()" class="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold px-7 py-3.5 rounded-2xl shadow-lg shadow-orange-500/30 transition-all duration-300 transform hover:scale-105 active:scale-95 text-sm sm:text-base">
+                        🕸️ Em tha lỗi cho anh! (Mở Photo Booth)
+                    </button>
+
+                    <button id="no-forgive-btn" onmouseover="dodgeButton()" ontouchstart="dodgeButton(event)" onclick="dodgeButton()" class="bg-purple-950/80 hover:bg-purple-900 text-purple-200 font-semibold px-5 py-3 rounded-2xl transition-all duration-200 text-xs sm:text-sm border border-purple-800">
+                        Không tha đâu 😤
+                    </button>
+                </div>
+
+                <p id="plead-message" class="text-center text-xs font-semibold text-orange-400 mt-3 min-h-[18px]"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MÀN HÌNH 3: PHOTO BOOTH STUDIO & HALLOWEEN STICKERS ================= -->
+    <div id="booth-screen" class="relative z-10 w-full max-w-6xl hidden opacity-0 transition-opacity duration-700 pb-16">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-3 bg-purple-950/60 backdrop-blur-md px-6 py-4 rounded-2xl border border-orange-500/30 shadow-sm">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">📸</span>
+                <div>
+                    <h2 class="font-serif-title text-xl font-bold text-orange-300">Phát & Trà My's Halloween Photo Booth</h2>
+                    <p class="text-xs text-purple-300">Chụp ảnh, chọn khung & dán sticker Halloween độc quyền ♥</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+                <button onclick="reopenLetter()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-purple-900/80 hover:bg-purple-900 text-orange-300 border border-orange-500/30 shadow-sm transition">
+                    💌 Xem lại thư 3D
+                </button>
+                <span id="status-badge" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-300 border border-orange-500/40">
+                    ✨ Sẵn sàng chụp 4 kiểu
+                </span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- CỘT TRÁI: CAMERA & BỘ ĐIỀU KHIỂN (7 cột) -->
+            <div class="lg:col-span-7 glass-card rounded-3xl p-5 md:p-6">
+                
+                <!-- Khung Camera -->
+                <div class="relative w-full aspect-[4/3] bg-gray-950 rounded-2xl overflow-hidden shadow-lg mb-5 border-4 border-orange-500/50">
+                    <video id="webcam" autoplay playsinline muted class="w-full h-full object-cover transform -scale-x-100 filter-halloween"></video>
+                    
+                    <div id="countdown-overlay" class="absolute inset-0 flex items-center justify-center bg-black/40 hidden">
+                        <span id="countdown-number" class="text-7xl md:text-8xl font-bold text-orange-400 drop-shadow-[0_4px_20px_rgba(247,127,0,0.9)] animate-bounce">3</span>
+                    </div>
+
+                    <div id="flash-overlay" class="camera-flash absolute inset-0 bg-white"></div>
+
+                    <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-orange-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-orange-500/30">
+                        Kiểu: <span id="shot-counter">0</span> / 4
+                    </div>
+
+                    <button onclick="toggleMirror()" class="absolute top-3 right-3 bg-black/60 hover:bg-black/80 backdrop-blur-md text-white text-xs font-medium px-3 py-1.5 rounded-full transition border border-orange-500/30">
+                        🪞 Lật gương
+                    </button>
+                </div>
+
+                <!-- Chọn Bộ lọc màu (Filters) -->
+                <div class="mb-5">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-orange-300 mb-2.5">1. Chọn màu Filter</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setFilter('halloween', this)" class="filter-btn active px-3.5 py-2 rounded-xl text-xs font-semibold bg-orange-600 text-white shadow-sm transition border border-orange-400">🎃 Halloween Spooky</button>
+                        <button onclick="setFilter('sweet', this)" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-purple-950 text-purple-200 hover:bg-purple-900 border border-purple-800 transition">🌸 Hồng Ngọt Ngào</button>
+                        <button onclick="setFilter('vintage', this)" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-purple-950 text-purple-200 hover:bg-purple-900 border border-purple-800 transition">🎞️ Film Cổ Điển</button>
+                        <button onclick="setFilter('bw', this)" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-purple-950 text-purple-200 hover:bg-purple-900 border border-purple-800 transition">🖤 Trắng Đen</button>
+                    </div>
+                </div>
+
+                <!-- Đếm ngược & Nút Bắt đầu chụp -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-purple-800/60">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <span class="text-xs font-medium text-purple-300">Đếm ngược:</span>
+                        <select id="timer-select" class="bg-purple-950 border border-purple-800 rounded-xl px-3 py-2 text-xs font-semibold text-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            <option value="3">3 giây / kiểu</option>
+                            <option value="5">5 giây / kiểu</option>
+                            <option value="2">2 giây (Chụp nhanh)</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <button id="start-btn" onclick="startPhotoSession()" class="w-full sm:w-auto flex-1 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-semibold px-7 py-3.5 rounded-2xl shadow-lg shadow-orange-500/30 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            <span>📸 Bắt Đầu Chụp (4 Kiểu)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4 Thumbnail xem nhanh -->
+                <div class="grid grid-cols-4 gap-2.5 mt-5">
+                    <div id="thumb-0" class="aspect-[4/3] rounded-xl bg-purple-950/60 border border-dashed border-purple-800 flex items-center justify-center text-xs text-purple-400 overflow-hidden">1</div>
+                    <div id="thumb-1" class="aspect-[4/3] rounded-xl bg-purple-950/60 border border-dashed border-purple-800 flex items-center justify-center text-xs text-purple-400 overflow-hidden">2</div>
+                    <div id="thumb-2" class="aspect-[4/3] rounded-xl bg-purple-950/60 border border-dashed border-purple-800 flex items-center justify-center text-xs text-purple-400 overflow-hidden">3</div>
+                    <div id="thumb-3" class="aspect-[4/3] rounded-xl bg-purple-950/60 border border-dashed border-purple-800 flex items-center justify-center text-xs text-purple-400 overflow-hidden">4</div>
+                </div>
+            </div>
+
+            <!-- CỘT PHẢI: KHUNG, STICKER & TẢI VỀ (5 cột) -->
+            <div class="lg:col-span-5 glass-card rounded-3xl p-5 md:p-6 flex flex-col items-center">
+                
+                <!-- Chọn Khung Viền Halloween / Thường -->
+                <div class="w-full mb-4">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-orange-300 mb-2">2. Chọn Khung Chủ Đề</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setFrameTheme('halloween')" class="py-2 px-3 rounded-xl text-xs font-semibold bg-orange-600 text-white border-2 border-orange-400">🎃 Halloween Bí Ngô</button>
+                        <button onclick="setFrameTheme('witch')" class="py-2 px-3 rounded-xl text-xs font-semibold bg-purple-900 text-purple-200 border-2 border-purple-600">🔮 Phù Thủy Tím</button>
+                        <button onclick="setFrameTheme('pink')" class="py-2 px-3 rounded-xl text-xs font-semibold bg-pink-900 text-pink-200 border-2 border-pink-700">🌸 Hồng Ngọt</button>
+                    </div>
+                </div>
+
+                <!-- Kho Sticker Halloween thả lên ảnh -->
+                <div class="w-full mb-4">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-orange-300">3. Kho Sticker Halloween 👻</label>
+                        <button onclick="clearStickers()" class="text-[10px] text-purple-300 hover:text-orange-300 underline">Xóa tất cả sticker</button>
+                    </div>
+                    <div class="flex flex-wrap gap-2 bg-purple-950/60 p-2.5 rounded-xl border border-purple-800">
+                        <button onclick="addSticker('🎃')" class="w-9 h-9 rounded-lg bg-purple-900 hover:bg-purple-800 text-lg flex items-center justify-center transition">🎃</button>
+                        <button onclick="addSticker('👻')" class="w-9 h-9 rounded-lg bg-purple-900 hover:bg-purple-800 text-lg flex items-center justify-center transition">👻</button>
+                        <button onclick="addSticker('🦇')" class="w-9 h-9 rounded-lg bg-purple-900 hover:bg-purple-800 text-lg flex items-center justify-center transition">🦇</button>
+                        <button onclick="addSticker('🕷️')" class="w-9 h-9 rounded-lg bg-purple-900 hover:bg-purple-800 text-lg flex items-center justify-center transition">🕷️</button>
+                        <button onclick="addSticker('🕸️')" class="w-9 h-9 rounded-lg bg-purple-900 hover:bg-purple-800 text-lg flex items-center justify-center transition">🕸️</button>
+                        <button onclick="addSticker('🧙‍♀️')" class="w-9 h-9 rounded-lg bg-purple-900 hover:bg-purple-800 text-lg flex items-center justify-center transition">🧙‍♀️</button>
+                        <button onclick="addSticker('💀')" class="w-9 h-9 rounded-lg bg-purple-900 hover:bg-purple-800 text-lg flex items-center justify-center transition">💀</button>
+                        <button onclick="addSticker('🍬')" class="w-9 h-9 rounded-lg bg-purple-900 hover:bg-purple-800 text-lg flex items-center justify-center transition">🍬</button>
+                        <button onclick="addSticker('❤️')" class="w-9 h-9 rounded-lg bg-purple-900 hover:bg-purple-800 text-lg flex items-center justify-center transition">❤️</button>
+                    </div>
+                </div>
+
+                <!-- Lời nhắn in lên khung ảnh -->
+                <div class="w-full mb-4">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-orange-300 mb-1.5">4. Chữ ký dưới khung ảnh</label>
+                    <input type="text" id="custom-caption" value="Happy Halloween 🎃 Phát & Trà My" oninput="renderStrip()" 
+                        class="w-full bg-purple-950 border border-purple-800 rounded-xl px-3.5 py-2 text-xs font-medium text-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                </div>
+
+                <!-- Canvas hiển thị dải ảnh Photostrip -->
+                <div class="bg-purple-950/40 p-3 rounded-2xl shadow-inner border border-orange-500/20 mb-5 flex justify-center w-full">
+                    <canvas id="strip-canvas" width="440" height="1260" class="w-auto max-h-[420px] rounded-lg shadow-xl"></canvas>
+                </div>
+
+                <!-- Nút tải ảnh & chụp lại -->
+                <div class="flex gap-3 w-full">
+                    <button id="download-btn" onclick="downloadStrip()" disabled class="flex-1 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 disabled:from-gray-800 disabled:to-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-semibold py-3.5 px-5 rounded-2xl shadow-md transition flex items-center justify-center gap-2 text-sm">
+                        <span>💾 Tải Ảnh Halloween</span>
+                    </button>
+                    <button onclick="resetBooth()" class="bg-purple-950 hover:bg-purple-900 text-purple-200 font-semibold py-3.5 px-4 rounded-2xl border border-purple-800 transition text-sm">
+                        🔄 Chụp lại
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================================
+           1. CẤU HÌNH MÃ PIN & NHẠC NỀN
+        ========================================================== */
+        const SECRET_PIN = "2409"; // Mã PIN: 24/09 (Sinh nhật Trà My)
+        const CUSTOM_MP3_URL = ""; 
+
+        let currentPin = "";
+        let activeStickers = []; // Lưu danh sách sticker được thả lên ảnh
+
+        const wrongMessages = [
+            "Nhập lại đi cục cưng, sai ngày sinh nhật rồi kìa! 😤",
+            "Ơ kìa, thử lại xem nào bé ơi! 🥺",
+            "Sai mật mã rồi nha, bấm nút Gợi ý bên dưới kìa! 💕"
+        ];
+
+        /* ==========================================================
+           2. HIỆU ỨNG ÂM THANH & NHẠC NỀN (SPOOKY MUSIC BOX)
+        ========================================================== */
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+        let isMusicPlaying = false;
+        let melodyInterval = null;
+        let noteIndex = 0;
+
+        const spookyMelodyNotes = [
+            440.00, 523.25, 493.88, 392.00, 440.00, 349.23, 329.63, 392.00,
+            440.00, 587.33, 523.25, 493.88, 440.00, 392.00, 440.00, 523.25
+        ];
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playTone(freq, duration, type = 'sine', volume = 0.16) {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function startBackgroundMusic() {
+            const widget = document.getElementById('music-player-widget');
+            widget.classList.remove('hidden');
+            setTimeout(() => widget.classList.remove('opacity-0', 'translate-y-4'), 50);
+
+            if (isMusicPlaying) return;
+            isMusicPlaying = true;
+            updateMusicUI();
+
+            const customAudio = document.getElementById('custom-bg-audio');
+            if (CUSTOM_MP3_URL.trim() !== "") {
+                customAudio.src = CUSTOM_MP3_URL;
+                customAudio.volume = 0.5;
+                customAudio.play().catch(() => {});
+            } else {
+                initAudio();
+                melodyInterval = setInterval(() => {
+                    if (!isMusicPlaying) return;
+                    const freq = spookyMelodyNotes[noteIndex % spookyMelodyNotes.length];
+                    playTone(freq, 1.1, 'sine', 0.08);
+                    playTone(freq * 0.5, 1.2, 'triangle', 0.04);
+                    noteIndex++;
+                }, 540);
+            }
+        }
+
+        function toggleBackgroundMusic() {
+            const customAudio = document.getElementById('custom-bg-audio');
+            if (isMusicPlaying) {
+                isMusicPlaying = false;
+                if (CUSTOM_MP3_URL.trim() !== "") {
+                    customAudio.pause();
+                } else if (melodyInterval) {
+                    clearInterval(melodyInterval);
+                    melodyInterval = null;
+                }
+            } else {
+                isMusicPlaying = true;
+                if (CUSTOM_MP3_URL.trim() !== "") {
+                    customAudio.play().catch(() => {});
+                } else {
+                    initAudio();
+                    melodyInterval = setInterval(() => {
+                        if (!isMusicPlaying) return;
+                        const freq = spookyMelodyNotes[noteIndex % spookyMelodyNotes.length];
+                        playTone(freq, 1.1, 'sine', 0.08);
+                        playTone(freq * 0.5, 1.2, 'triangle', 0.04);
+                        noteIndex++;
+                    }, 540);
+                }
+            }
+            updateMusicUI();
+        }
+
+        function updateMusicUI() {
+            const vinyl = document.getElementById('vinyl-disc');
+            const bars = document.getElementById('sound-bars');
+            const statusText = document.getElementById('music-status-text');
+
+            if (isMusicPlaying) {
+                vinyl.classList.remove('vinyl-paused');
+                bars.classList.remove('bars-paused');
+                statusText.textContent = "Đang phát nhạc • Chạm để dừng";
+            } else {
+                vinyl.classList.add('vinyl-paused');
+                bars.classList.add('bars-paused');
+                statusText.textContent = "Đã tạm dừng • Chạm để phát tiếp";
+            }
+        }
+
+        function playUnlockSound() {
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((note, i) => {
+                setTimeout(() => playTone(note, 0.25, 'triangle'), i * 85);
+            });
+        }
+
+        function playSpookyChime() {
+            const notes = [440, 554.37, 659.25, 880, 1108.73];
+            notes.forEach((note, i) => {
+                setTimeout(() => playTone(note, 0.35, 'triangle', 0.12), i * 110);
+            });
+        }
+
+        function playErrorSound() {
+            playTone(220, 0.2, 'sawtooth');
+            setTimeout(() => playTone(180, 0.25, 'sawtooth'), 120);
+        }
+
+        function playShutterSound() {
+            initAudio();
+            const bufferSize = audioCtx.sampleRate * 0.12;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+            noise.connect(gain);
+            gain.connect(audioCtx.destination);
+            noise.start();
+        }
+
+        /* ==========================================================
+           3. XỬ LÝ MÀN HÌNH NHẬP PIN -> THƯ 3D
+        ========================================================== */
+        function updatePinDots() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach((dot, idx) => {
+                if (idx < currentPin.length) {
+                    dot.textContent = "🎃";
+                    dot.classList.add('border-orange-500', 'bg-purple-900');
+                } else {
+                    dot.textContent = "";
+                    dot.classList.remove('border-orange-500', 'bg-purple-900');
+                }
+            });
+        }
+
+        function pressPin(num) {
+            if (currentPin.length < 4) {
+                playTone(600 + parseInt(num) * 40, 0.08);
+                currentPin += num;
+                updatePinDots();
+                document.getElementById('pin-message').textContent = "";
+
+                if (currentPin.length === 4) {
+                    setTimeout(checkPin, 200);
+                }
+            }
+        }
+
+        function deletePin() {
+            if (currentPin.length > 0) {
+                playTone(400, 0.08);
+                currentPin = currentPin.slice(0, -1);
+                updatePinDots();
+            }
+        }
+
+        function showHint() {
+            playTone(700, 0.1);
+            const msg = document.getElementById('pin-message');
+            msg.className = "text-xs font-medium text-orange-400 min-h-[20px] mb-4";
+            msg.textContent = "💡 Gợi ý: Your Birthday (4 số DDMM - 24/09) 💕";
+        }
+
+        function checkPin() {
+            if (currentPin === SECRET_PIN) {
+                playUnlockSound();
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#f77f00', '#7b2cbf', '#ffb703', '#ffffff']
+                });
+
+                const pinScreen = document.getElementById('pin-screen');
+                const letterScreen = document.getElementById('letter-screen');
+
+                pinScreen.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    pinScreen.classList.add('hidden');
+                    letterScreen.classList.remove('hidden');
+                    setTimeout(() => letterScreen.classList.remove('opacity-0'), 50);
+                }, 400);
+            } else {
+                playErrorSound();
+                const pinCard = document.getElementById('pin-screen');
+                pinCard.classList.remove('shake');
+                void pinCard.offsetWidth;
+                pinCard.classList.add('shake');
+
+                const msg = document.getElementById('pin-message');
+                msg.className = "text-xs font-semibold text-orange-400 min-h-[20px] mb-4";
+                msg.textContent = wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
+
+                currentPin = "";
+                setTimeout(updatePinDots, 300);
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (document.getElementById('pin-screen').classList.contains('hidden')) return;
+            if (e.key >= '0' && e.key <= '9') pressPin(e.key);
+            if (e.key === 'Backspace') deletePin();
+        });
+
+        /* ==========================================================
+           4. THƯ 3D HALLOWEEN
+        ========================================================== */
+        const env3D = document.getElementById('envelope-3d');
+        let isEnvelopeOpened = false;
+        let forgiveScale = 1;
+        let dodgeCount = 0;
+
+        const pleadTexts = [
+            "Ơ kìa bấm nút bên trái tha lỗi cho anh đi mà 🥺",
+            "Đừng bấm nút này mà, anh biết lỗi thật rồi huhu 💔",
+            "Nút đó bị hư rồi, bấm nút màu cam đi cục cưng 😭",
+            "Năn nỉ luôn đó, tha lỗi rồi mình chụp ảnh Halloween nha 💕"
+        ];
+
+        document.addEventListener('mousemove', (e) => {
+            if (document.getElementById('letter-screen').classList.contains('hidden')) return;
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 22;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 22;
+            if (!isEnvelopeOpened && env3D) {
+                env3D.style.transform = `rotateY(${-xAxis}deg) rotateX(${yAxis}deg)`;
+            }
+        });
+
+        function open3DLetter() {
+            if (isEnvelopeOpened) return;
+            isEnvelopeOpened = true;
+            playSpookyChime();
+            setTimeout(startBackgroundMusic, 500);
+
+            env3D.style.transform = `rotateY(0deg) rotateX(0deg)`;
+            env3D.classList.add('open');
+
+            setTimeout(() => {
+                document.getElementById('envelope-stage').classList.add('hidden');
+                const paperStage = document.getElementById('letter-paper-stage');
+                paperStage.classList.remove('hidden');
+                setTimeout(() => {
+                    paperStage.classList.remove('opacity-0', 'scale-90');
+                }, 50);
+            }, 950);
+        }
+
+        function dodgeButton(e) {
+            if (e) e.preventDefault();
+            playTone(500 + Math.random() * 300, 0.08, 'triangle');
+
+            const noBtn = document.getElementById('no-forgive-btn');
+            const yesBtn = document.getElementById('forgive-btn');
+            const pleadMsg = document.getElementById('plead-message');
+
+            const randomX = (Math.random() - 0.5) * 180;
+            const randomY = (Math.random() - 0.5) * 90;
+            noBtn.style.transform = `translate(${randomX}px, ${randomY}px) scale(0.9)`;
+
+            forgiveScale = Math.min(forgiveScale + 0.08, 1.35);
+            yesBtn.style.transform = `scale(${forgiveScale})`;
+
+            pleadMsg.textContent = pleadTexts[dodgeCount % pleadTexts.length];
+            dodgeCount++;
+        }
+
+        function acceptApology() {
+            playSpookyChime();
+            confetti({
+                particleCount: 110,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#f77f00', '#7b2cbf', '#ffb703', '#ffffff']
+            });
+
+            const letterScreen = document.getElementById('letter-screen');
+            const boothScreen = document.getElementById('booth-screen');
+
+            letterScreen.classList.add('opacity-0');
+            setTimeout(() => {
+                letterScreen.classList.add('hidden');
+                boothScreen.classList.remove('hidden');
+                setTimeout(() => boothScreen.classList.remove('opacity-0'), 50);
+                initCamera();
+                renderStrip();
+            }, 450);
+        }
+
+        function reopenLetter() {
+            const letterScreen = document.getElementById('letter-screen');
+            const boothScreen = document.getElementById('booth-screen');
+
+            boothScreen.classList.add('opacity-0');
+            setTimeout(() => {
+                boothScreen.classList.add('hidden');
+                letterScreen.classList.remove('hidden');
+                setTimeout(() => letterScreen.classList.remove('opacity-0'), 50);
+            }, 350);
+        }
+
+        /* ==========================================================
+           5. CAMERA & CHỤP ẢNH
+        ========================================================== */
+        const video = document.getElementById('webcam');
+        let isMirrored = true;
+        let currentFilter = 'halloween';
+        let capturedPhotos = [];
+        let currentFrameTheme = 'halloween';
+        let isShooting = false;
+        let cameraStarted = false;
+
+        async function initCamera() {
+            if (cameraStarted) return;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 1280 }, height: { ideal: 960 }, facingMode: "user" },
+                    audio: false
+                });
+                video.srcObject = stream;
+                cameraStarted = true;
+            } catch (err) {
+                alert("Bé ơi, hãy cấp quyền truy cập Camera trên trình duyệt để chụp ảnh nhé! 📸");
+            }
+        }
+
+        function toggleMirror() {
+            isMirrored = !isMirrored;
+            video.style.transform = isMirrored ? "scaleX(-1)" : "scaleX(1)";
+        }
+
+        function setFilter(filterName, btnEl) {
+            currentFilter = filterName;
+            video.className = `w-full h-full object-cover transition-all ${isMirrored ? 'transform -scale-x-100' : ''} filter-${filterName}`;
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = "filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-purple-950 text-purple-200 hover:bg-purple-900 border border-purple-800 transition";
+            });
+            btnEl.className = "filter-btn active px-3.5 py-2 rounded-xl text-xs font-semibold bg-orange-600 text-white shadow-sm transition border border-orange-400";
+        }
+
+        function getCanvasFilterString() {
+            switch (currentFilter) {
+                case 'halloween': return 'contrast(1.15) brightness(0.95) saturate(1.3) hue-rotate(15deg) sepia(0.2)';
+                case 'sweet': return 'contrast(1.04) brightness(1.06) saturate(1.18) sepia(0.08)';
+                case 'vintage': return 'sepia(0.35) contrast(1.08) brightness(0.98) saturate(0.85)';
+                case 'bw': return 'grayscale(1) contrast(1.18) brightness(1.03)';
+                default: return 'none';
+            }
+        }
+
+        async function startPhotoSession() {
+            if (isShooting) return;
+            isShooting = true;
+            capturedPhotos = [];
+            resetThumbnails();
+
+            const startBtn = document.getElementById('start-btn');
+            const statusBadge = document.getElementById('status-badge');
+            const delaySeconds = parseInt(document.getElementById('timer-select').value);
+
+            startBtn.disabled = true;
+            startBtn.classList.add('opacity-60');
+
+            for (let shot = 1; shot <= 4; shot++) {
+                document.getElementById('shot-counter').textContent = shot;
+                statusBadge.textContent = `📸 Chuẩn bị tạo dáng kiểu ${shot}/4...`;
+
+                await runCountdown(delaySeconds);
+                captureSingleFrame(shot - 1);
+                renderStrip();
+
+                if (shot < 4) {
+                    await new Promise(r => setTimeout(r, 900));
+                }
+            }
+
+            statusBadge.textContent = "🎉 Đã chụp xong! Chọn sticker & tải ảnh bên phải nhé ♥";
+            confetti({ particleCount: 70, spread: 70, origin: { y: 0.7 } });
+
+            startBtn.disabled = false;
+            startBtn.classList.remove('opacity-60');
+            document.getElementById('download-btn').disabled = false;
+            isShooting = false;
+        }
+
+        function runCountdown(seconds) {
+            return new Promise(resolve => {
+                const overlay = document.getElementById('countdown-overlay');
+                const numEl = document.getElementById('countdown-number');
+                overlay.classList.remove('hidden');
+                let count = seconds;
+
+                numEl.textContent = count;
+                playTone(750, 0.12);
+
+                const timer = setInterval(() => {
+                    count--;
+                    if (count > 0) {
+                        numEl.textContent = count;
+                        playTone(750, 0.12);
+                    } else {
+                        clearInterval(timer);
+                        overlay.classList.add('hidden');
+                        resolve();
+                    }
+                }, 1000);
+            });
+        }
+
+        function captureSingleFrame(index) {
+            playShutterSound();
+            const flash = document.getElementById('flash-overlay');
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 180);
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 800;
+            tempCanvas.height = 600;
+            const ctx = tempCanvas.getContext('2d');
+
+            ctx.save();
+            if (isMirrored) {
+                ctx.translate(tempCanvas.width, 0);
+                ctx.scale(-1, 1);
+            }
+            ctx.filter = getCanvasFilterString();
+
+            const vw = video.videoWidth || 640;
+            const vh = video.videoHeight || 480;
+            const targetRatio = 4 / 3;
+            let sx = 0, sy = 0, sw = vw, sh = vh;
+
+            if (vw / vh > targetRatio) {
+                sw = vh * targetRatio;
+                sx = (vw - sw) / 2;
+            } else {
+                sh = vw / targetRatio;
+                sy = (vh - sh) / 2;
+            }
+
+            ctx.drawImage(video, sx, sy, sw, sh, 0, 0, tempCanvas.width, tempCanvas.height);
+            ctx.restore();
+
+            const dataUrl = tempCanvas.toDataURL('image/png');
+            capturedPhotos.push(tempCanvas);
+
+            const thumb = document.getElementById(`thumb-${index}`);
+            thumb.innerHTML = `<img src="${dataUrl}" class="w-full h-full object-cover" />`;
+        }
+
+        function resetThumbnails() {
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`thumb-${i}`).innerHTML = i + 1;
+            }
+        }
+
+        function resetBooth() {
+            capturedPhotos = [];
+            activeStickers = [];
+            resetThumbnails();
+            document.getElementById('shot-counter').textContent = "0";
+            document.getElementById('download-btn').disabled = true;
+            document.getElementById('status-badge').textContent = "✨ Sẵn sàng chụp 4 kiểu";
+            renderStrip();
+        }
+
+        /* ==========================================================
+           6. QUẢN LÝ STICKER & VẼ KHUNG PHOTOSTRIP
+        ========================================================== */
+        const themes = {
+            halloween: { bg: '#2b1236', border: '#f77f00', text: '#ffb703', sub: '#ff9e00', accent: '🎃' },
+            witch: { bg: '#1c102b', border: '#9d4edd', text: '#e0aaff', sub: '#c77dff', accent: '🔮' },
+            pink: { bg: '#ffe5ec', border: '#ff85a1', text: '#590d22', sub: '#a4133c', accent: '♥' }
+        };
+
+        function setFrameTheme(themeName) {
+            currentFrameTheme = themeName;
+            renderStrip();
+        }
+
+        function addSticker(emoji) {
+            playTone(850, 0.05);
+            // Thêm sticker ngẫu nhiên trên canvas Strip
+            const randomX = Math.floor(Math.random() * 340) + 50;
+            const randomY = Math.floor(Math.random() * 1100) + 80;
+            activeStickers.push({ emoji, x: randomX, y: randomY, size: 48 });
+            renderStrip();
+        }
+
+        function clearStickers() {
+            playTone(300, 0.08);
+            activeStickers = [];
+            renderStrip();
+        }
+
+        function renderStrip() {
+            const canvas = document.getElementById('strip-canvas');
+            const ctx = canvas.getContext('2d');
+            const theme = themes[currentFrameTheme];
+
+            // Tô nền Strip
+            ctx.fillStyle = theme.bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Viền ngoài
+            ctx.strokeStyle = theme.border;
+            ctx.lineWidth = 4;
+            ctx.strokeRect(14, 14, canvas.width - 28, canvas.height - 28);
+
+            // Tiêu đề
+            ctx.fillStyle = theme.text;
+            ctx.font = '600 18px "Playfair Display", serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${theme.accent} SPOOKY MOMENTS ${theme.accent}`, canvas.width / 2, 52);
+
+            const photoW = 376;
+            const photoH = 262;
+            const startX = (canvas.width - photoW) / 2;
+            const startY = 75;
+            const gap = 18;
+
+            for (let i = 0; i < 4; i++) {
+                const y = startY + i * (photoH + gap);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(startX, y, photoW, photoH);
+
+                if (capturedPhotos[i]) {
+                    ctx.drawImage(capturedPhotos[i], startX, y, photoW, photoH);
+                } else {
+                    ctx.fillStyle = 'rgba(0,0,0,0.06)';
+                    ctx.fillRect(startX, y, photoW, photoH);
+                    ctx.fillStyle = theme.sub;
+                    ctx.font = '500 15px "Plus Jakarta Sans", sans-serif';
+                    ctx.fillText(`Pose #${i + 1}`, canvas.width / 2, y + photoH / 2 + 5);
+                }
+            }
+
+            // Vẽ các Sticker Halloween lên canvas
+            activeStickers.forEach(st => {
+                ctx.font = `${st.size}px serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(st.emoji, st.x, st.y);
+            });
+
+            // Chữ ký dưới khung
+            const caption = document.getElementById('custom-caption').value || "Happy Halloween ♥ Phát & Trà My";
+            ctx.fillStyle = theme.text;
+            ctx.font = '700 24px "Dancing Script", cursive';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText(caption, canvas.width / 2, 1205);
+
+            const today = new Date().toLocaleDateString('vi-VN');
+            ctx.fillStyle = theme.sub;
+            ctx.font = '500 12px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(`HALLOWEEN SPECIAL • ${today}`, canvas.width / 2, 1232);
+        }
+
+        function downloadStrip() {
+            const canvas = document.getElementById('strip-canvas');
+            const link = document.createElement('a');
+            link.download = `Halloween-Photobooth-Phat-TraMy-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        /* ==========================================================
+           7. HIỆU ỨNG DƠI / BÍ NGÔ BAY NỀN
+        ========================================================== */
+        function createFloatingBats() {
+            const container = document.getElementById('hearts-container');
+            const symbols = ['🎃', '🦇', '👻', '🕸️', '✨'];
+            for (let i = 0; i < 16; i++) {
+                const bat = document.createElement('div');
+                bat.className = 'floating-bat';
+                bat.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                bat.style.left = Math.random() * 100 + 'vw';
+                bat.style.fontSize = (Math.random() * 20 + 14) + 'px';
+                bat.style.animationDuration = (Math.random() * 8 + 7) + 's';
+                bat.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(bat);
+            }
+        }
+
+        createFloatingBats();
+        renderStrip();
+    </script>
+</body>
+</html>
